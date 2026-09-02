@@ -25,12 +25,17 @@ US_NE3_LON = -96.4397
 US_NE3_NAME = "US-Ne3 / CSP3"
 
 # Yearly non-irrigated corn GeoTIFF grid (MLRA-NE).
-AOI_WIDTH = 5343
-AOI_HEIGHT = 5469
+# rasterio width x height = 5469 x 5343 (columns x rows). Numpy shape is (5343, 5469).
+AOI_WIDTH = 5469
+AOI_HEIGHT = 5343
 AOI_RES_M = 30
 AOI_CRS = "EPSG:5070"
 AOI_NODATA = 0
+AOI_ORIGIN_X = -111285.0
+AOI_ORIGIN_Y = 2047275.0
 AOI_YEARS = (2001, 2003, 2005, 2007, 2009, 2011, 2013, 2015, 2017)
+# Earth Engine toDrive `folder` is a top-level My Drive name, not a nested path.
+EE_DRIVE_FOLDER = "CSP3_GPP_outputs"
 
 DRIVE_FOLDERS = {
     "PHD": "1v1BA59utUNTMyGrrE_ImLPLKwt6z1L1Q",

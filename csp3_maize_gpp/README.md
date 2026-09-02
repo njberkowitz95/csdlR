@@ -25,7 +25,7 @@ Colab paths are `MyDrive/PHD/...`. Site-history, biomass workbooks, and AOI GeoT
 - Regional GPP rasters use **ops_plant_harvest** for maize years that have an AOI GeoTIFF. Phenology dates are attributes only (2013/2017).
 - `MC_AGB` is All-IMZ Mean of whole-plant moisture (not grain moisture). HI is dry grain / dry AGB, with kernel-partition fallback. 2019/2021 HI stay NA (S8 / yield shapefiles are not joined).
 - GPP: `UMT/NTSG/v2/LANDSAT/GPP`, QC 10 and 11, scale 0.0001, no years after 2021. HI is **not** applied to GPP.
-- Modeling surface is `non_irrigated_corn_mlrane_{year}_clean.tif` (5343×5469, 30 m, EPSG:5070). US-Ne3 (`41.1797, -96.4397`) is a calibration point. No AOI for 2019/2021 — do not reuse 2017.
+- Modeling surface is `non_irrigated_corn_mlrane_{year}_clean.tif` (**5469 × 5343** columns × rows, numpy shape (5343, 5469), 30 m, EPSG:5070, origin −111285 / 2047275). US-Ne3 (`41.1797, -96.4397`) is a calibration point. No AOI for 2019/2021 — do not reuse 2017.
 
 ## Local audit tables (no Earth Engine)
 
@@ -37,7 +37,7 @@ python3 -m pytest tests -q
 python3 run_pipeline.py
 ```
 
-Writes `outputs/csp3_*.csv` and `outputs/validation_report.md`. GeoTIFF export requires Colab `ee.Authenticate()`.
+Writes `outputs/csp3_*.csv` and `outputs/validation_report.md`. GeoTIFF export requires Colab `ee.Authenticate()`; the full MLRA-NE grid is exported with `ee.batch.Export.image.toDrive` (then rasterio applies the corn mask).
 
 ## Outputs
 

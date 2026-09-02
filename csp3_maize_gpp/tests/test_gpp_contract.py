@@ -14,3 +14,5 @@ def test_gee_gpp_source_does_not_apply_hi_or_mc():
     assert ".multiply(hi" not in text.lower()
     assert "mc_agb" not in text.lower() or "mc_agb_applied_to_gpp" in text
     assert "harvest_index" not in text.lower()
+    assert "updateMask(corn_ee.gt(0))" in text
+    assert "ee.batch.Export.image.toDrive" in text

@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from aoi import find_aoi_raster
+from aoi import count_corn_pixels, find_aoi_raster
 from config import (
     AOI_YEARS,
     DO_NOT_JOIN,
@@ -260,6 +260,12 @@ def gpp_zonal_placeholder(ops_rows, aoi_lookup, gee_ok: bool, gee_error: str | N
         maize = rec.get("crop") == "maize"
         in_aoi = year in AOI_YEARS
         aoi = aoi_lookup.get(year, {})
+        n_corn = None
+        if aoi.get("path"):
+            try:
+                n_corn = count_corn_pixels(Path(aoi["path"]))
+            except Exception:
+                n_corn = None
         status = "skipped_not_maize"
         if maize and not in_aoi:
             status = "aoi_raster_missing"
@@ -287,7 +293,7 @@ def gpp_zonal_placeholder(ops_rows, aoi_lookup, gee_ok: bool, gee_error: str | N
                 "gpp_raster_status": status,
                 "gpp_mean": None,
                 "gpp_median": None,
-                "n_corn_pixels": None,
+                "n_corn_pixels": n_corn,
                 "us_ne3_lat": US_NE3_LAT,
                 "us_ne3_lon": US_NE3_LON,
                 "us_ne3_gpp": None,
@@ -378,8 +384,12 @@ def write_validation_report(path: Path, *, ops_rows, phenology_rows, missing, zo
         "",
         "Files `gpp_seasonal_sum_nonirr_corn_{year}.tif` and `gpp_nobs_nonirr_corn_{year}.tif` ",
         "for 2001, 2003, 2005, 2007, 2009, 2011, 2013, 2015, 2017.",
+        "AOI grid (from `*_clean.tif`): **5469 columns × 5343 rows**, 30 m, EPSG:5070, ",
+        "origin (−111285, 2047275), LZW, nodata 0. Numpy shape is (5343, 5469).",
         "Soybean years have **no** GPP GeoTIFFs. 2019/2021 are not invented from 2017.",
         "HI and MC_AGB are **not** multiplied into GPP.",
+        "Seasonal GeoTIFFs are written by `CSP3_GPP_Colab.ipynb` after `ee.Authenticate()` ",
+        "(full-grid exports use `ee.batch.Export.image.toDrive`).",
         "",
         f"- Earth Engine initialized in this run: **{gee_ok}**",
         "",

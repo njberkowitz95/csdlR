@@ -4,7 +4,15 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from config import AOI_CRS, AOI_HEIGHT, AOI_NODATA, AOI_RES_M, AOI_WIDTH, AOI_YEARS
+from config import (
+    AOI_HEIGHT,
+    AOI_NODATA,
+    AOI_ORIGIN_X,
+    AOI_ORIGIN_Y,
+    AOI_RES_M,
+    AOI_WIDTH,
+    AOI_YEARS,
+)
 
 
 def clean_name(year: int) -> str:
@@ -49,6 +57,15 @@ def find_aoi_raster(year: int, clean_dir: Path, parent_dir: Path | None = None) 
     }
 
 
+def count_corn_pixels(path: Path) -> int:
+    import rasterio
+
+    with rasterio.open(path) as src:
+        arr = src.read(1)
+        nodata = src.nodata if src.nodata is not None else AOI_NODATA
+        return int(((arr != nodata) & (arr > 0)).sum())
+
+
 def read_aoi_profile(path: Path) -> dict:
     import rasterio
 
@@ -80,6 +97,10 @@ def assert_aoi_grid(profile: dict, path: Path | None = None) -> None:
             problems.append(f"xres {transform.a} != {AOI_RES_M}")
         if abs(abs(transform.e) - AOI_RES_M) > 1e-6:
             problems.append(f"yres {transform.e} != -{AOI_RES_M}")
+        if abs(transform.c - AOI_ORIGIN_X) > 1e-3:
+            problems.append(f"origin x {transform.c} != {AOI_ORIGIN_X}")
+        if abs(transform.f - AOI_ORIGIN_Y) > 1e-3:
+            problems.append(f"origin y {transform.f} != {AOI_ORIGIN_Y}")
     if problems:
         loc = f" ({path})" if path else ""
         raise AssertionError("AOI grid mismatch" + loc + ": " + "; ".join(problems))

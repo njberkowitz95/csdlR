@@ -65,22 +65,26 @@ R5 is never called R6. Harvest is never substituted for R6.
 
 Files `gpp_seasonal_sum_nonirr_corn_{year}.tif` and `gpp_nobs_nonirr_corn_{year}.tif` 
 for 2001, 2003, 2005, 2007, 2009, 2011, 2013, 2015, 2017.
+AOI grid (from `*_clean.tif`): **5469 columns × 5343 rows**, 30 m, EPSG:5070, 
+origin (−111285, 2047275), LZW, nodata 0. Numpy shape is (5343, 5469).
 Soybean years have **no** GPP GeoTIFFs. 2019/2021 are not invented from 2017.
 HI and MC_AGB are **not** multiplied into GPP.
+Seasonal GeoTIFFs are written by `CSP3_GPP_Colab.ipynb` after `ee.Authenticate()` 
+(full-grid exports use `ee.batch.Export.image.toDrive`).
 
 - Earth Engine initialized in this run: **False**
 
 | year | raster status | mean | median | n corn pixels |
 |---|---|---|---|---|
-| 2001 | aoi_file_not_in_local_cache | None | None | None |
-| 2003 | aoi_file_not_in_local_cache | None | None | None |
-| 2005 | aoi_file_not_in_local_cache | None | None | None |
-| 2007 | aoi_file_not_in_local_cache | None | None | None |
-| 2009 | aoi_file_not_in_local_cache | None | None | None |
-| 2011 | aoi_file_not_in_local_cache | None | None | None |
-| 2013 | aoi_file_not_in_local_cache | None | None | None |
-| 2015 | aoi_file_not_in_local_cache | None | None | None |
-| 2017 | aoi_file_not_in_local_cache | None | None | None |
+| 2001 | gee_auth_missing | None | None | 3727441 |
+| 2003 | gee_auth_missing | None | None | 3337467 |
+| 2005 | gee_auth_missing | None | None | 3603854 |
+| 2007 | gee_auth_missing | None | None | 3655028 |
+| 2009 | gee_auth_missing | None | None | 3060115 |
+| 2011 | gee_auth_missing | None | None | 3939817 |
+| 2013 | gee_auth_missing | None | None | 3553355 |
+| 2015 | gee_auth_missing | None | None | 3592870 |
+| 2017 | gee_auth_missing | None | None | 3691727 |
 
 ## Missing / excluded
 

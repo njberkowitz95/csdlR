@@ -17,6 +17,10 @@ from config import (
     AOI_NODATA,
     AOI_RES_M,
     AOI_YEARS,
+    COLAB_OUTPUTS,
+    COLAB_PHD,
+    COLAB_RASTERS,
+    EE_DRIVE_FOLDER,
     EE_PROJECT,
     GPP_COLLECTION,
     GPP_MAX_YEAR,
@@ -140,7 +144,7 @@ def _reproject(image, profile: dict):
 
 
 def mask_to_ee(path: Path, profile: dict):
-    """Best-effort corn mask as ee.Image. Colab may instead mask locally with rasterio."""
+    """Best-effort corn mask as ee.Image. rasterio always re-applies the mask after export."""
     import ee
 
     try:
@@ -148,13 +152,45 @@ def mask_to_ee(path: Path, profile: dict):
     except ImportError:
         geemap = None
     if geemap is not None:
-        try:
-            img = geemap.ee_image_from_geotiff(str(path))
-            return img
-        except Exception:
-            pass
+        for attr in ("ee_image_from_geotiff", "geotiff_to_ee", "raster_to_ee"):
+            fn = getattr(geemap, attr, None)
+            if fn is None:
+                continue
+            try:
+                img = fn(str(path))
+                if img is not None:
+                    return img
+            except Exception:
+                continue
     region = _region_from_profile(profile)
     return ee.Image(1).clip(region)
+
+
+def _prepare_seasonal_images(year, buffered_start, end_exclusive, aoi_path):
+    """QC-scale-sum GPP, reproject to the AOI grid, mask with corn > 0."""
+    if year > GPP_MAX_YEAR:
+        raise ValueError(f"UMT Landsat GPP is not used after {GPP_MAX_YEAR}")
+    if year not in AOI_YEARS:
+        raise ValueError(f"{year} has no AOI raster year list entry")
+
+    profile = read_aoi_profile(aoi_path)
+    assert_aoi_grid(profile, aoi_path)
+
+    import rasterio
+
+    with rasterio.open(aoi_path) as src:
+        corn = src.read(1)
+        nodata = src.nodata if src.nodata is not None else AOI_NODATA
+        corn_mask = (corn != nodata) & (corn > 0)
+        if int(corn_mask.sum()) == 0:
+            raise AssertionError(f"{aoi_path} has no valid corn pixels")
+
+    seasonal, n_obs, _ = seasonal_gpp_images(buffered_start, end_exclusive)
+    region = _region_from_profile(profile)
+    corn_ee = mask_to_ee(aoi_path, profile)
+    seasonal = _reproject(seasonal, profile).updateMask(corn_ee.gt(0)).clip(region).rename(BAND_SEASON)
+    n_obs = _reproject(n_obs, profile).updateMask(corn_ee.gt(0)).clip(region).rename(BAND_NOBS)
+    return seasonal, n_obs, profile, region
 
 
 def export_year_rasters(
@@ -165,90 +201,167 @@ def export_year_rasters(
     aoi_path: Path,
     out_dir: Path,
     *,
-    use_geemap: bool = True,
-    to_drive_folder: str = "PHD/CSP3_GPP_outputs/rasters",
+    use_geemap: bool = False,
+    to_drive_folder: str = EE_DRIVE_FOLDER,
 ) -> dict:
+    """Export seasonal GPP + n_obs for one maize year.
+
+    The MLRA-NE grid is ~29 million pixels (~117 MB float32), so
+    ``geemap.ee_export_image`` (getDownloadURL) usually fails. Default is
+    ``ee.batch.Export.image.toDrive`` into a top-level Drive folder, then
+    ``finalize_year_rasters`` copies into ``PHD/CSP3_GPP_outputs/rasters``
+    and applies the corn mask with rasterio. HI / MC_AGB are never applied.
+    """
     import ee
 
-    if year > GPP_MAX_YEAR:
-        raise ValueError(f"UMT Landsat GPP is not used after {GPP_MAX_YEAR}")
-    if year not in AOI_YEARS:
-        raise ValueError(f"{year} has no AOI raster year list entry")
-
-    profile = read_aoi_profile(aoi_path)
-    assert_aoi_grid(profile, aoi_path)
-    seasonal, n_obs, _ = seasonal_gpp_images(buffered_start, end_exclusive)
-
-    import rasterio
-
-    with rasterio.open(aoi_path) as src:
-        corn = src.read(1)
-        nodata = src.nodata if src.nodata is not None else AOI_NODATA
-        corn_mask = (corn != nodata) & (corn > 0)
-        if int(corn_mask.sum()) == 0:
-            raise AssertionError(f"{aoi_path} has no valid corn pixels")
-    # Clip/reproject to the AOI grid; local rasterio applies the corn mask after download.
-    region = _region_from_profile(profile)
-    seasonal = _reproject(seasonal, profile).clip(region)
-    n_obs = _reproject(n_obs, profile).clip(region)
+    seasonal, n_obs, profile, region = _prepare_seasonal_images(
+        year, buffered_start, end_exclusive, aoi_path
+    )
+    _ = buffered_end  # kept in the signature for audit tables / callers
 
     sum_name = f"gpp_seasonal_sum_nonirr_corn_{year}.tif"
     nobs_name = f"gpp_nobs_nonirr_corn_{year}.tif"
     out_dir.mkdir(parents=True, exist_ok=True)
     sum_path = out_dir / sum_name
     nobs_path = out_dir / nobs_name
+    crs_transform = affine_to_crs_transform(profile["transform"])
 
-    kwargs = {
-        "region": region,
-        "crs": AOI_CRS,
-        "crs_transform": affine_to_crs_transform(profile["transform"]),
-        "file_per_band": False,
-    }
-
-    exported_via = None
     if use_geemap:
         import geemap
 
         try:
-            geemap.ee_export_image(seasonal, filename=str(sum_path), **kwargs)
-            geemap.ee_export_image(n_obs, filename=str(nobs_path), **kwargs)
-            exported_via = "geemap.ee_export_image"
-        except Exception as exc:
-            exported_via = f"geemap_failed:{exc}"
-
-    if exported_via is None or (
-        isinstance(exported_via, str) and exported_via.startswith("geemap_failed")
-    ):
-        for image, name in ((seasonal, sum_name), (n_obs, nobs_name)):
-            task = ee.batch.Export.image.toDrive(
-                image=image,
-                description=name.replace(".tif", ""),
-                folder=to_drive_folder,
-                fileNamePrefix=name.replace(".tif", ""),
+            geemap.ee_export_image(
+                seasonal,
+                filename=str(sum_path),
                 region=region,
                 crs=AOI_CRS,
-                crsTransform=affine_to_crs_transform(profile["transform"]),
-                maxPixels=1e10,
-                fileFormat="GeoTIFF",
+                crs_transform=crs_transform,
+                file_per_band=False,
             )
-            task.start()
+            geemap.ee_export_image(
+                n_obs,
+                filename=str(nobs_path),
+                region=region,
+                crs=AOI_CRS,
+                crs_transform=crs_transform,
+                file_per_band=False,
+            )
+            apply_local_corn_mask(sum_path, nobs_path, aoi_path)
+            zonal = zonal_from_raster(sum_path, nobs_path, aoi_path)
+            zonal.update(
+                {
+                    "year": year,
+                    "status": "ok",
+                    "exported_via": "geemap.ee_export_image",
+                    "sum_path": str(sum_path),
+                    "nobs_path": str(nobs_path),
+                    "aoi_path": str(aoi_path),
+                    "hi_applied_to_gpp": False,
+                    "mc_agb_applied_to_gpp": False,
+                }
+            )
+            return zonal
+        except Exception as exc:
+            geemap_error = str(exc)
+    else:
+        geemap_error = None
+
+    tasks = []
+    for image, name in ((seasonal, sum_name), (n_obs, nobs_name)):
+        task = ee.batch.Export.image.toDrive(
+            image=image,
+            description=name.replace(".tif", "")[:100],
+            folder=to_drive_folder,
+            fileNamePrefix=name.replace(".tif", ""),
+            region=region,
+            crs=AOI_CRS,
+            crsTransform=crs_transform,
+            maxPixels=1e10,
+            fileFormat="GeoTIFF",
+        )
+        task.start()
+        status = task.status()
+        tasks.append({"name": name, "id": status.get("id") or getattr(task, "id", None), "state": status.get("state")})
+    return {
+        "year": year,
+        "status": "export_started_to_drive",
+        "exported_via": "ee.batch.Export.image.toDrive",
+        "to_drive_folder": to_drive_folder,
+        "tasks": tasks,
+        "sum_path": str(sum_path),
+        "nobs_path": str(nobs_path),
+        "aoi_path": str(aoi_path),
+        "geemap_error": geemap_error,
+        "hi_applied_to_gpp": False,
+        "mc_agb_applied_to_gpp": False,
+        "note": (
+            "EE toDrive writes to a top-level My Drive folder named "
+            f"{to_drive_folder}. Re-run finalize_year_rasters after COMPLETED."
+        ),
+    }
+
+
+def drive_search_dirs(extra: list[Path] | None = None) -> list[Path]:
+    dirs = [
+        COLAB_RASTERS,
+        COLAB_OUTPUTS,
+        Path("/content/drive/MyDrive") / EE_DRIVE_FOLDER,
+        Path("/content/drive/MyDrive") / EE_DRIVE_FOLDER / "rasters",
+        Path("/content/drive/MyDrive/rasters"),
+        COLAB_PHD / EE_DRIVE_FOLDER,
+        COLAB_PHD / EE_DRIVE_FOLDER / "rasters",
+    ]
+    if extra:
+        dirs.extend(extra)
+    seen = []
+    for d in dirs:
+        if d not in seen:
+            seen.append(d)
+    return seen
+
+
+def find_exported_tif(name: str, search_dirs: list[Path] | None = None) -> Path | None:
+    for folder in search_dirs or drive_search_dirs():
+        candidate = folder / name
+        if candidate.exists() and candidate.stat().st_size > 0:
+            return candidate
+    return None
+
+
+def finalize_year_rasters(
+    year: int,
+    aoi_path: Path,
+    dest_dir: Path,
+    search_dirs: list[Path] | None = None,
+) -> dict:
+    """Copy completed Drive GeoTIFFs into dest_dir, mask to corn, compute zonal stats."""
+    import shutil
+
+    sum_name = f"gpp_seasonal_sum_nonirr_corn_{year}.tif"
+    nobs_name = f"gpp_nobs_nonirr_corn_{year}.tif"
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    found_sum = find_exported_tif(sum_name, search_dirs)
+    found_nobs = find_exported_tif(nobs_name, search_dirs)
+    if found_sum is None or found_nobs is None:
         return {
             "year": year,
-            "status": "export_started_to_drive",
-            "exported_via": exported_via or "ee.batch.Export.image.toDrive",
-            "sum_path": str(sum_path),
-            "nobs_path": str(nobs_path),
-            "aoi_path": str(aoi_path),
-            "note": "Drive export is async; re-run rasterio validation after tasks complete",
+            "status": "waiting_for_drive_export",
+            "sum_found": str(found_sum) if found_sum else None,
+            "nobs_found": str(found_nobs) if found_nobs else None,
         }
-
+    sum_path = dest_dir / sum_name
+    nobs_path = dest_dir / nobs_name
+    if found_sum.resolve() != sum_path.resolve():
+        shutil.copy2(found_sum, sum_path)
+    if found_nobs.resolve() != nobs_path.resolve():
+        shutil.copy2(found_nobs, nobs_path)
     apply_local_corn_mask(sum_path, nobs_path, aoi_path)
     zonal = zonal_from_raster(sum_path, nobs_path, aoi_path)
     zonal.update(
         {
             "year": year,
             "status": "ok",
-            "exported_via": exported_via,
+            "exported_via": "ee.batch.Export.image.toDrive+rasterio_mask",
             "sum_path": str(sum_path),
             "nobs_path": str(nobs_path),
             "aoi_path": str(aoi_path),
