@@ -1,0 +1,20 @@
+filename,drive_id,parent,top_level,role,year
+2001-2017 site-history CSP3.xlsx,1teas5SssbwyocZ4ir1oOzqBaxq1Gd07p,PHD/CSP3,true,site_history,
+CSP 2013  Site 3.xlsx,1o1jEUwhgxvEZCFp9df6YdfLPiP0x3RTE,PHD/CSP3,true,annual_site3,2013
+CSP 2014   Site 3.xlsx,1At4VG8SHThiNifvoHCwE3ToDtHsYVf3b,PHD/CSP3,true,annual_site3,2014
+CSP 2016  Site 3.xlsx,1x0ppGNKkQpkIWDbRUiDiJgd4QfWyRigk,PHD/CSP3,true,annual_site3,2016
+CSP 2017  Site 3.xlsx,1aaX9ZmT3D7wJpLiY74joEfiJlyHbV_zN,PHD/CSP3,true,annual_site3,2017
+CSP 2018   Site 3.xlsx,13nGp3YoerskCIGpi_EntZ9noB2-BEFWZ,PHD/CSP3,true,annual_site3,2018
+CSP 2019  Site 3.xlsx,1dhGjhl6ofHXrPw1FWreCO4ma9qLZEIzu,PHD/CSP3,true,annual_site3,2019
+CSP 2020   Site 3.xlsx,1hrLUTPUaEEE5W54XW4cHWiydf5yNwufT,PHD/CSP3/Biomass Sampling_2003_2021,false,annual_site3,2020
+CSP 2021  Site 3.xlsx,1OTyKtDRoTtzLBsjqxmOXBa-XDq9gddUt,PHD/CSP3,true,annual_site3,2021
+non_irrigated_corn_mlrane_2001_clean.tif,1yjvh-F9KZ6i35Q68i-e6AhIbHUiEls2x,PHD/non_irrigated_corn/clean,true,aoi,2001
+non_irrigated_corn_mlrane_2003_clean.tif,12hVAKvv2eeEJeC8rsf9WH8WR6Q26nvGh,PHD/non_irrigated_corn/clean,true,aoi,2003
+non_irrigated_corn_mlrane_2005_clean.tif,1ZnsVdvIkM77c8e6STY5gYKjke16KfIs2,PHD/non_irrigated_corn/clean,true,aoi,2005
+non_irrigated_corn_mlrane_2007_clean.tif,16gS39fsIYw_r7gJOl65UTvVS1RLvraEo,PHD/non_irrigated_corn/clean,true,aoi,2007
+non_irrigated_corn_mlrane_2009_clean.tif,1O8wKrzXRfXsLFQSaYAzinsK5TE0uiCH4,PHD/non_irrigated_corn/clean,true,aoi,2009
+non_irrigated_corn_mlrane_2011_clean.tif,1rNEr0JCd9vnrAH24NzRFU60jQc6TdxPp,PHD/non_irrigated_corn/clean,true,aoi,2011
+non_irrigated_corn_mlrane_2013_clean.tif,1CIs4RbaAHKEIT1ZhXCxgVwlo99Icp4Qi,PHD/non_irrigated_corn/clean,true,aoi,2013
+non_irrigated_corn_mlrane_2015_clean.tif,1wW9vmivUGOlEDcTnICKVk6jcyV5iPxI_,PHD/non_irrigated_corn/clean,true,aoi,2015
+non_irrigated_corn_mlrane_2017_clean.tif,1pX3td3RjoN-x88SLzwUD2IRpNWMF5Ok-,PHD/non_irrigated_corn/clean,true,aoi,2017
+CSP3_GPP_outputs,,PHD,true,output_folder,

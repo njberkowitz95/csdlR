@@ -1,0 +1,10 @@
+year,role,path,filename,drive_id,top_level,a1_crop,a1_raw,a1_sheet,preferred,note
+,site_history,/workspace/csp3_maize_gpp/data/workbooks/2001-2017 site-history CSP3.xlsx,2001-2017 site-history CSP3.xlsx,1teas5SssbwyocZ4ir1oOzqBaxq1Gd07p,True,,,,True,
+2013,annual_site3,/workspace/csp3_maize_gpp/data/workbooks/CSP 2013  Site 3.xlsx,CSP 2013  Site 3.xlsx,1o1jEUwhgxvEZCFp9df6YdfLPiP0x3RTE,True,maize,CSP 2013 Maize,V2 (148),True,
+2014,annual_site3,/workspace/csp3_maize_gpp/data/workbooks/CSP 2014   Site 3.xlsx,CSP 2014   Site 3.xlsx,1At4VG8SHThiNifvoHCwE3ToDtHsYVf3b,True,soybean,CSP 2014 Soybeans,V2 (162),True,
+2016,annual_site3,/workspace/csp3_maize_gpp/data/workbooks/CSP 2016  Site 3.xlsx,CSP 2016  Site 3.xlsx,1x0ppGNKkQpkIWDbRUiDiJgd4QfWyRigk,True,soybean,CSP 2016 Soybeans,V2 (166),True,
+2017,annual_site3,/workspace/csp3_maize_gpp/data/workbooks/CSP 2017  Site 3.xlsx,CSP 2017  Site 3.xlsx,1aaX9ZmT3D7wJpLiY74joEfiJlyHbV_zN,True,maize,CSP 2017 Maize,V4 (157),True,
+2018,annual_site3,/workspace/csp3_maize_gpp/data/workbooks/CSP 2018   Site 3.xlsx,CSP 2018   Site 3.xlsx,13nGp3YoerskCIGpi_EntZ9noB2-BEFWZ,True,soybean,CSP 2018 Soybeans,V2 (158),True,
+2019,annual_site3,/workspace/csp3_maize_gpp/data/workbooks/CSP 2019  Site 3.xlsx,CSP 2019  Site 3.xlsx,1dhGjhl6ofHXrPw1FWreCO4ma9qLZEIzu,True,maize,CSP 2019 Maize,V2 (149),True,
+2020,annual_site3,/workspace/csp3_maize_gpp/data/workbooks/CSP 2020   Site 3.xlsx,CSP 2020   Site 3.xlsx,1hrLUTPUaEEE5W54XW4cHWiydf5yNwufT,False,soybean,CSP 2020 Soybeans,V1 (157),True,Not a PHD/CSP3 top-level file; copy under Biomass Sampling_2003_2021
+2021,annual_site3,/workspace/csp3_maize_gpp/data/workbooks/CSP 2021  Site 3.xlsx,CSP 2021  Site 3.xlsx,1OTyKtDRoTtzLBsjqxmOXBa-XDq9gddUt,True,maize,CSP 2021 Maize,V3 (146),True,

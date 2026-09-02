@@ -1,3 +1,10 @@
-.ipynb*
+.ipynb_checkpoints
 .DS_Store
 *.Rhistory
+__pycache__/
+*.pyc
+
+# CSP3 maize GPP: keep code and tables; omit bulky binaries
+csp3_maize_gpp/data/workbooks/*.xlsx
+csp3_maize_gpp/data/aoi/*.tif
+csp3_maize_gpp/outputs/rasters/*.tif
