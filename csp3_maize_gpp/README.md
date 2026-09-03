@@ -4,7 +4,7 @@ Audit-first maize growing-season dates, All-IMZ `MC_AGB`, and harvest index from
 
 Primary executable: [`CSP3_GPP_Colab.ipynb`](CSP3_GPP_Colab.ipynb) (Earth Engine Python API + geemap + rasterio).
 
-Do not modify CSDL map-creation code in this repository. This package only adds `csp3_maize_gpp/`.
+Intended GitHub home: [`njberkowitz95/Yields-and-Fields-CH1`](https://github.com/njberkowitz95/Yields-and-Fields-CH1). Do not modify CSDL map-creation code if this package is still present in `csdlR`.
 
 ## Drive layout
 
@@ -14,8 +14,11 @@ Do not modify CSDL map-creation code in this repository. This package only adds 
 | PHD/CSP3 | `11QTWHfMmIvRyzcbvLF1LQs39QwCttjmL` |
 | PHD/non_irrigated_corn/clean | `1TWEl3i8iqjcHzefHrDZJznWsXra3qTBk` |
 | PHD/CSP3_GPP_outputs | `1R1gslopQ3GqYHoZHAkFFVs6g0SBfizm1` |
+| My Drive/GitHub/Yields-and-Fields-CH1/csp3_maize_gpp | `1xvLgtKILRyxdD2o1VpxL0VQEnbd_CIhp` |
+| PHD/GitHub/Yields-and-Fields-CH1/csp3_maize_gpp | `1okbOVtNyvcMWpThzJN6QxVxt2dqfRfzM` |
+| Colab Notebooks | `11sZmBqR8z01WKvb39HqIG5v_eUPbBH16` |
 
-Colab paths are `MyDrive/PHD/...`. Site-history, biomass workbooks, and AOI GeoTIFFs are never overwritten.
+Colab paths are `MyDrive/PHD/...` and `MyDrive/GitHub/Yields-and-Fields-CH1/csp3_maize_gpp/`. Site-history, biomass workbooks, and AOI GeoTIFFs are never overwritten.
 
 ## Rules that the code enforces
 

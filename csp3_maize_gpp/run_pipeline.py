@@ -18,6 +18,13 @@ from config import AOI_YEARS, resolve_paths
 from gee_gpp import export_year_rasters, try_ee_initialize
 
 
+def raster_output_dir(outputs: Path | None, default_rasters: Path) -> Path:
+    """GeoTIFFs go under ``rasters/``, matching Colab ``OUT/rasters``."""
+    if outputs is None:
+        return Path(default_rasters)
+    return Path(outputs) / "rasters"
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--outputs", type=Path, default=None)
@@ -42,7 +49,8 @@ def main():
     import pandas as pd
 
     paths = resolve_paths()
-    out_dir = Path(args.outputs or paths["rasters"])
+    out_dir = raster_output_dir(args.outputs, paths["rasters"])
+    out_dir.mkdir(parents=True, exist_ok=True)
     zonal_csv = Path(result["files"]["csp3_gpp_zonal_nonirr_corn.csv"])
     zonal = pd.read_csv(zonal_csv)
     from aoi import find_aoi_raster
