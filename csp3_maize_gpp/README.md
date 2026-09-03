@@ -4,7 +4,7 @@ Audit-first maize growing-season dates, All-IMZ `MC_AGB`, and harvest index from
 
 Primary executable: [`CSP3_GPP_Colab.ipynb`](CSP3_GPP_Colab.ipynb) (Earth Engine Python API + geemap + rasterio).
 
-Intended GitHub home: [`njberkowitz95/Yields-and-Fields-CH1`](https://github.com/njberkowitz95/Yields-and-Fields-CH1). Do not modify CSDL map-creation code if this package is still present in `csdlR`.
+This package lives in [`njberkowitz95/Yields-and-Fields-CH1`](https://github.com/njberkowitz95/Yields-and-Fields-CH1). Keep CSDL map-creation code in `csdlR`.
 
 ## Drive layout
 

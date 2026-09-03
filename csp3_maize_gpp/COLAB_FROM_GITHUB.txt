@@ -1,9 +1,8 @@
 CSP3 maize GPP
 ==============
 
-Intended GitHub repo: https://github.com/njberkowitz95/Yields-and-Fields-CH1
-(path: csp3_maize_gpp/). Push from this cloud agent is blocked until the GitHub
-token has Contents read/write on that private repository.
+GitHub: https://github.com/njberkowitz95/Yields-and-Fields-CH1
+path: csp3_maize_gpp/
 
 Drive copies of the Python notebook and helpers:
 
