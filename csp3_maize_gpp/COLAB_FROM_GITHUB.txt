@@ -1,0 +1,24 @@
+CSP3 maize GPP
+==============
+
+Intended GitHub repo: https://github.com/njberkowitz95/Yields-and-Fields-CH1
+(path: csp3_maize_gpp/). Push from this cloud agent is blocked until the GitHub
+token has Contents read/write on that private repository.
+
+Drive copies of the Python notebook and helpers:
+
+  My Drive/GitHub/Yields-and-Fields-CH1/csp3_maize_gpp/
+    https://drive.google.com/drive/folders/1xvLgtKILRyxdD2o1VpxL0VQEnbd_CIhp
+
+  PHD/GitHub/Yields-and-Fields-CH1/csp3_maize_gpp/
+    https://drive.google.com/drive/folders/1okbOVtNyvcMWpThzJN6QxVxt2dqfRfzM
+
+  Colab Notebooks / CSP3_GPP_Colab.ipynb
+    https://drive.google.com/file/d/1xeBwGcaf8MlcRfTGwXCwuV1O4j7cehVk/view
+
+  PHD/CSP3_GPP_outputs/
+    https://drive.google.com/drive/folders/1R1gslopQ3GqYHoZHAkFFVs6g0SBfizm1
+
+Run helpers next to CSP3_GPP_Colab.ipynb. Seasonal GeoTIFFs need Colab
+ee.Authenticate(); Earth Engine toDrive writes a top-level My Drive folder
+named CSP3_GPP_outputs. Do not overwrite PHD/CSP3 workbooks or AOI GeoTIFFs.
