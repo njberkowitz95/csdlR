@@ -19,10 +19,17 @@ from gee_gpp import export_year_rasters, try_ee_initialize
 
 
 def raster_output_dir(outputs: Path | None, default_rasters: Path) -> Path:
-    """GeoTIFFs go under ``rasters/``, matching Colab ``OUT/rasters``."""
+    """GeoTIFFs go under ``rasters/``, matching Colab ``OUT/rasters``.
+
+    If ``--outputs`` already names a ``rasters`` directory, use it as-is so
+    callers do not get ``.../rasters/rasters``.
+    """
     if outputs is None:
         return Path(default_rasters)
-    return Path(outputs) / "rasters"
+    out = Path(outputs)
+    if out.name == "rasters":
+        return out
+    return out / "rasters"
 
 
 def main():
