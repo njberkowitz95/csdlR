@@ -1,0 +1,15 @@
+year,issue,detail,workbook,a1_crop,aoi_status
+2014,soybean_biomass_workbook_excluded,A1='CSP 2014 Soybeans' on V2 (162); MC_AGB and HI are not computed from soybean workbooks,CSP 2014   Site 3.xlsx,soybean,
+2016,soybean_biomass_workbook_excluded,A1='CSP 2016 Soybeans' on V2 (166); MC_AGB and HI are not computed from soybean workbooks,CSP 2016  Site 3.xlsx,soybean,
+2018,soybean_biomass_workbook_excluded,A1='CSP 2018 Soybeans' on V2 (158); MC_AGB and HI are not computed from soybean workbooks,CSP 2018   Site 3.xlsx,soybean,
+2020,soybean_biomass_workbook_excluded,A1='CSP 2020 Soybeans' on V1 (157); MC_AGB and HI are not computed from soybean workbooks,CSP 2020   Site 3.xlsx,soybean,
+2014,ops_plant_date_missing,2014 PLANT is absent from site-history CSP3 (appendix has harvest 2014-10-07/08 only). Plant date is not filled from Field Activities Log.,2001-2017 site-history CSP3.xlsx,,
+2015,maize_biomass_workbook_missing,2015 is maize in site-history but no CSP 2015 Site 3 workbook exists; MC_AGB and HI are NA.,,,
+2017,provisional_end_stage,R5 on R5 (261) is used as provisional_end_date; it is not labeled R6 or replaced with harvest.,CSP 2017  Site 3.xlsx,,
+2019,hi_na,HI is NA (kernel_or_subsample_nonnumeric). Yield shapefiles and S8 are not joined.,CSP 2019  Site 3.xlsx,,
+2021,hi_na,HI is NA (kernel_or_subsample_nonnumeric). Yield shapefiles and S8 are not joined.,CSP 2021  Site 3.xlsx,,
+2019,aoi_raster_missing,No non_irrigated_corn GeoTIFF for this year. 2017 is not reused. Phenology/MC tables are still produced.,,,aoi_raster_missing
+2021,aoi_raster_missing,No non_irrigated_corn GeoTIFF for this year. 2017 is not reused. Phenology/MC tables are still produced.,,,aoi_raster_missing
+,source_not_joined,Explicitly not joined: S8_CSP3_Geophysics_Yield_Data_20221005.xlsx,S8_CSP3_Geophysics_Yield_Data_20221005.xlsx,,
+,source_not_joined,Explicitly not joined: yield shapefiles,,,
+,source_not_joined,Explicitly not joined: Field Activities Log 2014 to 2021.csv,Field Activities Log 2014 to 2021.csv,,
