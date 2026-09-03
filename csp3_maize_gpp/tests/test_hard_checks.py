@@ -59,9 +59,10 @@ def test_maize_phenology_mc_hi_hard_checks():
         got = by_year[year]
         assert got["planting_doy"] == exp["planting_doy"]
         assert got["end_stage"] == exp["end_stage"]
-        assert got["hi"] == pytest.approx(exp["hi"]) if exp["hi"] is not None else (got["hi"] is None)
         if exp["hi"] is None:
             assert got["hi"] is None
+        else:
+            assert got["hi"] == pytest.approx(exp["hi"])
 
     soy_years = [rec["year"] for rec in annual.values() if rec.get("a1_crop") == "soybean"]
     assert 2014 in soy_years and 2016 in soy_years
